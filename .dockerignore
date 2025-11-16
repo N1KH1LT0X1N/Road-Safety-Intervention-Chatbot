@@ -58,9 +58,10 @@ cli/
 frontend/
 
 # CSV files - BUT allow the data CSV file we need for backend
+# Exclude all CSV files first
 *.csv
 GPT_Input_DB*.csv
-# Explicitly allow the CSV file we need for the backend (relative to root)
-!backend/data/raw/GPT_Input_DB*.csv
+# Then explicitly allow the CSV file we need (must come AFTER exclusion)
 !backend/data/raw/
+!backend/data/raw/GPT_Input_DB*.csv
 
