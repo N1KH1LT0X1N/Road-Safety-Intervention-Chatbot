@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.coverage
+htmlcov/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+docs/
+README.md
+DEPLOYMENT*.md
+BACKEND_DEPLOYMENT.md
+USAGE_GUIDE.md
+
+# Data files (only include processed, not raw)
+backend/data/raw/
+backend/data/chroma_db/*.sqlite3
+backend/data/chroma_db/*.bin
+
+# Other
+.DS_Store
+*.db
+*.sqlite
+
+# CLI and frontend (not needed for backend)
+cli/
+frontend/
+
+# CSV files
+*.csv
+GPT_Input_DB*.csv
+
