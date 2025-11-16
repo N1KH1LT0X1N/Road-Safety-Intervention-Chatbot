@@ -4,11 +4,54 @@ An AI-powered system for recommending road safety interventions based on IRC sta
 
 ## 🌟 Features
 
+### Core Features
 - **Multi-Interface Support**: Web App (Streamlit), REST API (FastAPI), and CLI Tool
 - **Hybrid Search**: Combines RAG (vector similarity) and structured queries
 - **AI-Powered**: Google Gemini for embeddings, entity extraction, and synthesis
 - **Comprehensive Database**: 105+ road safety interventions from IRC standards
 - **Smart Recommendations**: Confidence scoring, detailed specifications, and IRC citations
+
+### 🎉 WOW Features (Advanced Capabilities)
+
+**🎨 Visual Generation**
+- Auto-generate road sign images from IRC specifications
+- Create road marking diagrams (arrows, zebra crossings, chevrons, etc.)
+- Instant visual previews with accurate colors and dimensions
+
+**📄 PDF Report Generation**
+- Professional, multi-page PDF reports with branding
+- Executive summaries and detailed specifications
+- Download-ready reports for stakeholders
+
+**📸 Image Analysis with AI**
+- Upload photos of road signs/markings for instant analysis
+- Automatic identification and condition assessment
+- Auto-generate search queries from images
+- Gemini Vision-powered recognition
+
+**📊 Multi-Intervention Planning**
+- Create comprehensive implementation plans
+- Timeline generation with start/end dates
+- Cost aggregation and budget tracking
+- Priority-based optimization
+
+**⚖️ Budget Optimization**
+- Maximize safety impact within budget constraints
+- Value/cost ratio analysis
+- Smart intervention selection algorithm
+
+**📈 Interactive Comparison**
+- Compare interventions side-by-side
+- Multi-factor winner analysis
+- Trade-off identification
+
+**📊 Analytics Dashboard**
+- Comprehensive statistics and insights
+- Category and problem distributions
+- Search history analytics
+- Actionable recommendations
+
+👉 **See [WOW_FEATURES.md](docs/WOW_FEATURES.md) for detailed documentation!**
 
 ## 🏗️ Architecture
 
