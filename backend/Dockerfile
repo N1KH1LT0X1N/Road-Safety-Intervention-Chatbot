@@ -41,7 +41,6 @@ COPY app/ ./app/
 # Copy CSV file directly by name (source of truth - always in git)
 # The app will generate interventions.json from CSV at startup if missing
 COPY data/raw/GPT_Input_DB*.csv ./data/raw/
-COPY data/raw/.gitkeep ./data/raw/.gitkeep
 # Don't copy processed JSON - let app generate it from CSV at startup
 # This avoids Railway build issues with missing files
 # chroma_db directory already created above with RUN mkdir -p
