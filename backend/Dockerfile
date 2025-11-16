@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
-COPY requirements.txt .
+# Copy requirements first for better caching (relative to root)
+COPY backend/requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --user -r requirements.txt
@@ -34,13 +34,13 @@ ENV PATH=/root/.local/bin:$PATH
 # Create necessary directories first
 RUN mkdir -p ./data/raw ./data/processed ./data/chroma_db ./scripts
 
-# Copy only necessary application files
-COPY app/ ./app/
+# Copy only necessary application files (relative to root)
+COPY backend/app/ ./app/
 
-# Copy data files
+# Copy data files (relative to root)
 # Copy CSV file directly by name (source of truth - always in git)
 # The app will generate interventions.json from CSV at startup if missing
-COPY data/raw/GPT_Input_DB*.csv ./data/raw/
+COPY backend/data/raw/GPT_Input_DB*.csv ./data/raw/
 # Don't copy processed JSON - let app generate it from CSV at startup
 # This avoids Railway build issues with missing files
 # chroma_db directory already created above with RUN mkdir -p
