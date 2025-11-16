@@ -58,7 +58,7 @@ An AI-powered system for recommending road safety interventions based on IRC sta
 ```
 ┌─────────────────────────────────────────┐
 │  User Interfaces                         │
-│  - Streamlit Web App (Vercel)           │
+│  - Streamlit Web App (Streamlit Cloud)  │
 │  - REST API (Railway)                    │
 │  - CLI Tool                              │
 └─────────────┬───────────────────────────┘
@@ -184,8 +184,20 @@ road-safety search query "faded stop sign on highway"
 
 ### REST API
 
+**Local Development:**
 ```bash
 curl -X POST "http://localhost:8000/api/v1/search" \
+  -H "X-API-Key: your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "faded stop sign on highway",
+    "max_results": 5
+  }'
+```
+
+**Production (Deployed Backend):**
+```bash
+curl -X POST "https://road-safety-intervention-chatbot-production.up.railway.app/api/v1/search" \
   -H "X-API-Key: your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -241,43 +253,89 @@ docker-compose up --build
 
 ### Individual Containers
 
+**Backend:**
 ```bash
-# Backend
 cd backend
 docker build -t road-safety-backend .
-docker run -p 8000:8000 --env-file ../.env road-safety-backend
+docker run -p 8000:8000 \
+  -e GEMINI_API_KEY=your_key \
+  -e API_KEYS=key1,key2 \
+  -e ENVIRONMENT=production \
+  road-safety-backend
+```
 
-# Frontend
+**Frontend:**
+```bash
 cd frontend
 docker build -t road-safety-frontend .
-docker run -p 8501:8501 --env-file .env road-safety-frontend
+docker run -p 8501:8501 \
+  -e API_URL=http://localhost:8000 \
+  -e API_KEY=your_api_key \
+  road-safety-frontend
 ```
+
+**Note**: The backend Dockerfile uses a multi-stage build and automatically generates `interventions.json` from CSV on first startup if missing.
 
 ## 🚀 Deployment
 
-### Backend on Railway
+### ✅ Backend on Railway (Deployed)
 
+The backend is deployed and running on Railway:
+
+**🌐 Backend URL**: `https://road-safety-intervention-chatbot-production.up.railway.app`
+
+**Deployment Steps:**
 1. Push code to GitHub
 2. Create new project on [Railway](https://railway.app)
 3. Connect GitHub repository
-4. Set environment variables:
-   - `GEMINI_API_KEY`
-   - `API_KEYS`
+4. Set build context to root (`.`)
+5. Set Dockerfile path to `backend/Dockerfile`
+6. Set environment variables in Railway:
+   - `GEMINI_API_KEY` - Your Google Gemini API key
+   - `API_KEYS` - Comma-separated API keys for authentication
    - `ENVIRONMENT=production`
-5. Deploy from `backend` directory
-6. Railway will auto-deploy on push
+7. Railway will auto-deploy on push
 
-### Frontend on Vercel
+**Configuration Files:**
+- `railway.json` - Railway deployment configuration
+- `backend/Dockerfile` - Multi-stage Docker build
+- `.dockerignore` - Excludes unnecessary files from build
 
-1. Push code to GitHub
-2. Import project on [Vercel](https://vercel.com)
-3. Set root directory to `frontend`
-4. Add environment variables:
-   - `API_URL=https://your-railway-app.railway.app`
-   - `API_KEY=your_api_key`
-5. Deploy
+**Key Features:**
+- Auto-generates `interventions.json` from CSV on first startup
+- Handles empty vector store gracefully (falls back to structured search)
+- CORS enabled for frontend connections
+
+### ✅ Frontend on Streamlit Cloud (Recommended)
+
+**⚠️ Note**: Streamlit apps cannot run on Vercel (requires WebSocket connections). Use Streamlit Cloud instead.
+
+**Deployment Steps:**
+1. Go to [share.streamlit.io](https://share.streamlit.io)
+2. Sign in with your GitHub account
+3. Click **"New app"**
+4. Configure:
+   - **Repository**: `N1KH1LT0X1N/Road-Safety-Intervention-Chatbot`
+   - **Branch**: `main`
+   - **Main file path**: `frontend/app.py`
+5. Click **"Deploy!"**
+6. After deployment, go to **Settings** → **Secrets** and add:
+   ```toml
+   API_URL = "https://road-safety-intervention-chatbot-production.up.railway.app"
+   API_KEY = "your-api-key-from-railway"
+   ```
+
+**Alternative: Deploy Frontend on Railway**
+- Create a new Railway service
+- Set root directory to `frontend/`
+- Use the `frontend/Dockerfile`
+- Set environment variables: `API_URL` and `API_KEY`
+
+**See [DEPLOYMENT_STEPS.md](DEPLOYMENT_STEPS.md) for detailed deployment instructions.**
 
 ## 📊 API Endpoints
+
+**Base URL**: `https://road-safety-intervention-chatbot-production.up.railway.app`
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -289,7 +347,9 @@ docker run -p 8501:8501 --env-file .env road-safety-frontend
 | `/api/v1/interventions/categories/list` | GET | List categories |
 | `/api/v1/interventions/problems/list` | GET | List problem types |
 
-See full API documentation at `/docs` endpoint.
+**API Documentation**: Visit `https://road-safety-intervention-chatbot-production.up.railway.app/docs` for interactive API docs.
+
+**Authentication**: All API endpoints require an `X-API-Key` header with a valid API key.
 
 ## 🧪 Testing
 
@@ -314,15 +374,24 @@ Road-Safety-Intervention-Chatbot/
 │   │   ├── services/     # Services
 │   │   └── utils/        # Utilities
 │   ├── data/             # Data files
-│   └── scripts/          # Setup scripts
+│   │   ├── raw/         # Raw CSV data
+│   │   ├── processed/   # Processed JSON data
+│   │   └── chroma_db/   # Vector store
+│   ├── scripts/          # Setup scripts
+│   ├── Dockerfile        # Docker configuration
+│   └── requirements.txt  # Python dependencies
 ├── frontend/             # Streamlit web app
-│   ├── components/       # UI components
-│   ├── utils/            # Utilities
-│   └── app.py            # Main app
+│   ├── utils/            # Utilities (API client)
+│   ├── app.py            # Main app
+│   ├── Dockerfile        # Docker configuration
+│   ├── requirements.txt  # Python dependencies
+│   └── vercel.json       # Vercel config (not used - use Streamlit Cloud)
 ├── cli/                  # CLI tool
 │   └── road_safety_cli/  # CLI package
 ├── docs/                 # Documentation
-├── docker/               # Docker configs
+├── railway.json          # Railway deployment config
+├── .dockerignore         # Docker ignore rules
+├── DEPLOYMENT_STEPS.md   # Deployment guide
 └── README.md             # This file
 ```
 
