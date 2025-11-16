@@ -31,13 +31,15 @@ COPY --from=builder /root/.local /root/.local
 # Make sure scripts in .local are usable
 ENV PATH=/root/.local/bin:$PATH
 
+# Create necessary directories first
+RUN mkdir -p ./data/raw ./data/processed ./data/chroma_db ./scripts
+
 # Copy only necessary application files
 COPY app/ ./app/
-COPY data/processed/interventions.json ./data/processed/interventions.json
-COPY data/chroma_db/ ./data/chroma_db/
 
-# Create necessary directories
-RUN mkdir -p ./data/raw ./data/processed ./scripts
+# Copy data files - copy entire directories to handle nested structure
+COPY data/processed/ ./data/processed/
+COPY data/chroma_db/ ./data/chroma_db/
 
 # Expose port
 EXPOSE 8000
