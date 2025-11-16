@@ -272,16 +272,37 @@ def main():
         # Filters
         st.header("🔍 Filters")
 
-        # Initialize API client with session state values
+        # Initialize API client with session state values (but don't call API during init)
         api_client = APIClient(base_url=st.session_state.api_url, api_key=st.session_state.api_key)
 
-        # Get filter options
-        try:
-            categories = api_client.get_categories()
-            problems = api_client.get_problems()
-        except:
-            categories = ["Road Sign", "Road Marking", "Traffic Calming Measures"]
-            problems = ["Damaged", "Faded", "Missing"]
+        # Always use defaults immediately - NO API calls during initialization to avoid blocking deployment
+        if "categories" not in st.session_state:
+            st.session_state.categories = ["Road Sign", "Road Marking", "Traffic Calming Measures"]
+        if "problems" not in st.session_state:
+            st.session_state.problems = ["Damaged", "Faded", "Missing"]
+        
+        # Use cached/default values (no blocking API calls)
+        categories = st.session_state.categories
+        problems = st.session_state.problems
+        
+        # Optional: Add a button to refresh filters from API (non-blocking, user-initiated)
+        if st.session_state.api_url and "localhost" not in st.session_state.api_url:
+            if st.button("🔄 Refresh Filters from API", help="Fetch latest categories and problems"):
+                try:
+                    with st.spinner("Fetching filters..."):
+                        filter_client = APIClient(
+                            base_url=st.session_state.api_url, 
+                            api_key=st.session_state.api_key,
+                            timeout=3
+                        )
+                        new_categories = filter_client.get_categories()
+                        new_problems = filter_client.get_problems()
+                        st.session_state.categories = new_categories
+                        st.session_state.problems = new_problems
+                    st.success("✅ Filters updated!")
+                    st.rerun()
+                except Exception as e:
+                    st.warning(f"⚠️ Could not refresh: {str(e)}. Using default filters.")
 
         selected_categories = st.multiselect("Category", options=categories, default=[])
 
