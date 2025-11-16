@@ -37,3 +37,24 @@ httpx==0.26.0
 # Code Quality
 black==24.1.1
 ruff==0.1.14
+
+# 🌟 WOW FEATURES 🌟
+
+# Visual Generation
+Pillow==10.2.0
+matplotlib==3.8.2
+seaborn==0.13.1
+
+# PDF Generation
+reportlab==4.0.8
+pypdf==3.17.4
+
+# Charts & Visualizations
+plotly==5.18.0
+
+# Image Processing
+opencv-python-headless==4.9.0.80
+
+# Data Export
+openpyxl==3.1.2
+xlsxwriter==3.1.9
