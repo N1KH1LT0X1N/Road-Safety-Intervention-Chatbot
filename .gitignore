@@ -48,6 +48,7 @@ ENV/
 # Data
 backend/data/processed/*
 !backend/data/processed/.gitkeep
+!backend/data/processed/interventions.json
 backend/data/chroma_db/*
 !backend/data/chroma_db/.gitkeep
 *.pkl
