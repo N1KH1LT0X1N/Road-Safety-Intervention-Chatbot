@@ -327,18 +327,22 @@ def main():
         # Max results
         max_results = st.slider("Max Results", min_value=1, max_value=10, value=5)
 
-        # Database stats
+        # Database stats - lazy loaded only when expander is opened
         with st.expander("📊 Database Statistics"):
-            try:
-                stats = api_client.get_stats()
-                st.metric("Total Interventions", stats["total_interventions"])
+            # Only fetch stats when user opens the expander (lazy loading)
+            if st.button("📊 Load Statistics", key="load_stats"):
+                try:
+                    with st.spinner("Loading statistics..."):
+                        stats = api_client.get_stats()
+                        st.metric("Total Interventions", stats["total_interventions"])
 
-                st.write("**Categories:**")
-                for cat, count in stats["categories"].items():
-                    st.write(f"- {cat}: {count}")
-
-            except Exception as e:
-                st.error(f"Could not load stats: {e}")
+                        st.write("**Categories:**")
+                        for cat, count in stats["categories"].items():
+                            st.write(f"- {cat}: {count}")
+                except Exception as e:
+                    st.error(f"Could not load stats: {e}")
+            else:
+                st.info("Click 'Load Statistics' to fetch database statistics from the API.")
 
     # Main content
     st.header("🔍 Search for Road Safety Interventions")

@@ -77,3 +77,6 @@ htmlcov/
 *.tmp
 temp/
 tmp/
+
+# Presentation content (local only, not for GitHub)
+PRESENTATION_CONTENT.md
